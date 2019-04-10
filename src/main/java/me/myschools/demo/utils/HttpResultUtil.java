@@ -22,13 +22,25 @@ public class HttpResultUtil {
     }
 
     public static HttpResult success() {
-        return success(null);
+        HttpResult result = new HttpResult();
+        result.setCode(0);
+        result.setMsg("success");
+        result.setData(new ArrayList<>());
+        return result;
     }
 
     public static HttpResult error(Integer code, String msg) {
         HttpResult result = new HttpResult();
         result.setCode(code);
         result.setMsg(msg);
+        return result;
+    }
+
+    public static HttpResult error(ExceptionResultEnum resultEnum) {
+        HttpResult result = new HttpResult();
+        result.setCode(resultEnum.getCode());
+        result.setMsg(resultEnum.getMsg());
+        result.setData(new ArrayList<>());
         return result;
     }
 

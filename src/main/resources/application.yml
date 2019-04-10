@@ -7,7 +7,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       filters: stat
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       initial-size: 1
       min-idle: 1
       max-active: 15
@@ -21,71 +21,62 @@ spring:
       pool-prepared-statements: false
       max-pool-prepared-statement-per-connection-size: 20
       default-auto-commit: true
-    wechat-db:
-      username: xintijiao
-      password: Zt1237890
-    authcenter:
-      username: xintijiao
-      password: Zt1237890
+      username: dev
+      password: Zucc123456
+  jackson:
+    time-zone: GMT+8
 
-
-  profiles:
-        active: pro
   http:
     encoding:
       charset: utf-8
 
+  profiles:
+          active: dev
+
 server:
-  port: 804
+  port: 808
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: me.myschools.xtjauthorizationcenter.domain
+  type-aliases-package: tk.mybatis.springboot.model
 
-jwt:
-  header: Authorization
-  secret: "lua-resty-jwt"
-  expiration: 5400
-  tokenHead: "Bearer "
+mapper:
+  mappers:
+    - tk.mybatis.mapper.common.Mapper
+    - tk.mybatis.mapper.common.Mapper2
+  not-empty: true
+  identity: MYSQL
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+  offset-as-page-num: true
+  row-bounds-with-count: true
 
 logging:
   config: classpath:logback-spring.xml
 
-wechat:
-  open:
-    AppId: "wx8466bd57e3f3e42e"
-    Secret: "ad4a573dc3bac78f77549c0d2abdf9b1"
-  mini:
-    AppId: "wx49cced01eec31847"
-    Secret: "c2ef503983730e44d5c28568628ab57f"
-  service:
-    AppId: "wx3ac2549f640d5800"
-    Secret: "1404accb33db71597e30ea688c718125"
 
 ---
 
 spring:
   profiles: dev
   datasource:
-    wechat-db:
-      url: jdbc:mysql://120.26.44.61:13306/xtj-wechat?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
-    authcenter:
-      url: jdbc:mysql://120.26.44.61:13306/xintijiao?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+    druid:
+      url: jdbc:mysql://:3306/dev-xtjdisk?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
 
 logback:
-  logdir: E:\\LogFile\\xtj-authorizationcenter
+  logdir: E:\LogFile\xtj-equipmentcenter\
 
 ---
 
 spring:
   profiles: pro
   datasource:
-    wechat-db:
-      url: jdbc:mysql://rdsiqiqbzmajbrn.mysql.rds.aliyuncs.com:3306/xtj-wechat?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
-    authcenter:
-      url: jdbc:mysql://rdsiqiqbzmajbrn.mysql.rds.aliyuncs.com:3306/xintijiao?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+      druid:
+        url: jdbc:mysql://:3306/dev-xtjdisk?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
 
 logback:
-  logdir: /var/log/xtj-authorizationcenter-log/
-
-
+  logdir: /var/log/xtj-equipmentcenter-log/

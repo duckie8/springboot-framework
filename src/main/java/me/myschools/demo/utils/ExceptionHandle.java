@@ -1,6 +1,6 @@
 package me.myschools.demo.utils;
 
-import me.myschools.demo.domain.ParamValidationResult;
+import cn.zucc.netdisc.domain.ParamValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,12 +27,12 @@ public class ExceptionHandle {
      */
     @ExceptionHandler(value = Exception.class)
     public HttpResult handle(Exception e) {
-        logger.error(e.getMessage());
+        logger.error(e.getMessage(), e);
         if (e instanceof ExceptionUtil) {
             ExceptionUtil exceptionUtil = (ExceptionUtil) e;
             return HttpResultUtil.error(exceptionUtil.getCode(), exceptionUtil.getMessage());
         } else {
-            return HttpResultUtil.error(-1, e.getMessage());
+            return HttpResultUtil.error(-1, e.getMessage() == null ? "未知错误" : e.getMessage());
         }
     }
 
@@ -55,5 +56,12 @@ public class ExceptionHandle {
         }
         logger.error(ExceptionResultEnum.PARAMETER_VERIFICATION_ERROR.getMsg());
         return HttpResultUtil.error(ExceptionResultEnum.PARAMETER_VERIFICATION_ERROR, paramValidationResults);
+    }
+
+    @ExceptionHandler(value = ServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public HttpResult ServerError(HttpServletRequest req, HttpServletResponse rsp, Exception e) {
+        logger.error(e.getMessage());
+        return HttpResultUtil.error(500, e.getMessage());
     }
 }
